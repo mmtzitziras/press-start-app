@@ -1,6 +1,11 @@
-import jwt from "jsonwebtoken";
+import "dotenv/config";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 
-export function requireAuth(req, res, next) {
+const JWKS = createRemoteJWKSet(
+  new URL(`${process.env.SUPABASE_URL}/auth/v1/.well-known/jwks.json`)
+);
+
+export async function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Missing token" });
@@ -9,8 +14,16 @@ export function requireAuth(req, res, next) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const payload = jwt.verify(token, process.env.SUPABASE_JWT_SECRET);
-    req.user = { id: payload.sub, email: payload.email };
+    const { payload } = await jwtVerify(token, JWKS, {
+      issuer: `${process.env.SUPABASE_URL}/auth/v1`,
+      audience: "authenticated"
+    });
+
+    req.user = {
+      id: payload.sub,
+      email: payload.email
+    };
+
     next();
   } catch {
     return res.status(401).json({ error: "Invalid token" });
