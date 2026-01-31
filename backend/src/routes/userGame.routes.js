@@ -3,6 +3,8 @@ import { requireAuth } from "../middlewares/auth.middleware.js";
 import { upsertUserGame } from "../services/userGame.service.js";
 import { getUserGames } from "../services/userGame.service.js";
 import { updateUserGameReview } from "../services/userGame.service.js";
+import { getOrCreateGameById } from "../services/game.service.js";
+
 
 const router = Router();
 const VALID_STATUSES = ["PLAYING", "PLAYED", "WISHLIST"];
@@ -17,12 +19,12 @@ router.post("/", requireAuth, async (req, res) => {
     if (!VALID_STATUSES.includes(status)) {
         return res.status(400).json({ error: "Invalid status" });
     }
+    await getOrCreateGameById(gameId); // ensure Game exists (cache-first)
     const userGame = await upsertUserGame({
         userId: req.user.id,
         gameId,
         status
     });
-
     res.json(userGame);
 })
 
@@ -67,5 +69,7 @@ router.patch("/", requireAuth, async(req, res) =>{
 
     res.json(updated);
 })
+
+
 
 export default router;
