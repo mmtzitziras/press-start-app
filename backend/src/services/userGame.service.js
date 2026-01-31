@@ -21,7 +21,30 @@ export async function getUserGames({userId, status}){
             userId,
             ...(status ? {status} : {})
         },
+        include: {
+            game: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            }
+        },
         orderBy: { createdAt: "desc"}
     });
 }
 
+
+export async function updateUserGameReview({
+    userId,
+    gameId,
+    score,
+    review
+}){
+    return prisma.userGame.update({
+        where: {userId_gameId : {userId, gameId}},
+        data: {
+            ...(score !== undefined ? { score } : {}),
+            ...(review !== undefined ? { review } : {})
+        }
+    })
+}
