@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import protectedRoutes from "./routes/protected.routes.js";
 import userGameRoutes from "./routes/userGame.routes.js";
+import statsRoutes from "./routes/stats.routes.js";
 
 
 const app = express();
@@ -12,6 +13,8 @@ app.use(express.json());
 app.get("/health", (_, res) => res.json({ ok: true }));
 app.use("/api/protected", protectedRoutes);
 app.use("/api/user-games", userGameRoutes);
+app.use("/api/stats", statsRoutes);
+
 
 
 const PORT = process.env.PORT || 4000;
