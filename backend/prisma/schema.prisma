@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+model User {
+  id        String   @id              // Supabase user id (UUID as string)
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  games     UserGame[]
+}
+
+model Game {
+  id        Int      @id               // IGDB game id
+  name      String
+  coverUrl  String?
+  createdAt DateTime @default(now())
+
+  users     UserGame[]
+}
+
+model UserGame {
+   id        Int      @id @default(autoincrement())
+  userId    String
+  gameId    Int
+
+  status    GameStatus
+  playtime  Int      @default(0)
+
+  score     Int?     // 1–10 (nullable)
+  review    String?  // optional text review
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  game Game @relation(fields: [gameId], references: [id])
+
+  @@unique([userId, gameId])
+}
+
+enum GameStatus {
+  PLAYING
+  PLAYED
+  WISHLIST
+}
