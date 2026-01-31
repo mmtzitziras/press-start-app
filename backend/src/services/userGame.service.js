@@ -14,3 +14,14 @@ export async function upsertUserGame({userId, gameId, status}) {
         }
     });
 }
+
+export async function getUserGames({userId, status}){
+    return prisma.userGame.findMany({
+        where: {
+            userId,
+            ...(status ? {status} : {})
+        },
+        orderBy: { createdAt: "desc"}
+    });
+}
+
