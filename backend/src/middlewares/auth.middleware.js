@@ -1,10 +1,6 @@
-import { jwtVerify, createRemoteJWKSet } from "jose";
+import jwt from "jsonwebtoken";
 
-const JWKS = createRemoteJWKSet(
-  new URL("https://estibzcxjymrbgsbycvc.supabase.co/auth/v1/.well-known/jwks.json")
-);
-
-export async function requireAuth(req, res, next) {
+export function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Missing token" });
@@ -13,20 +9,10 @@ export async function requireAuth(req, res, next) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const { payload } = await jwtVerify(token, JWKS, {
-      issuer: "https://estibzcxjymrbgsbycvc.supabase.co/auth/v1",
-      audience: "authenticated"
-    });
-
-    req.user = {
-      id: payload.sub,
-      email: payload.email
-    };
-
+    const payload = jwt.verify(token, process.env.SUPABASE_JWT_SECRET);
+    req.user = { id: payload.sub, email: payload.email };
     next();
-  } catch (err) {
-    console.error("JWT ERROR:", err);
+  } catch {
     return res.status(401).json({ error: "Invalid token" });
   }
 }
-
