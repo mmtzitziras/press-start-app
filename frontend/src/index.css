@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer utilities {
+  .neon-cyan {
+    text-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #00ffff,
+      0 0 40px #00ffff;
+  }
+
+  .neon-box {
+    box-shadow:
+      0 0 20px rgba(0,255,255,.4),
+      inset 0 0 20px rgba(0,255,255,.2);
+  }
+
+  .font-arcade {
+    font-family: 'Press Start 2P', cursive;
+  }
+
+  .neon-cyan-text {
+    color: #00ffff;
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  .neon-hover-yellow:hover {
+    color: #ffff00;
+  }
+
+  .neon-icon {
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+
+  .neon-navbar {
+    box-shadow: 0 2px 20px rgba(0, 255, 255, 0.2);
+  }
+
+  .neon-magenta-text {
+    color: #ff00ff;
+    text-shadow: 0 0 10px currentColor;
+  }
+
+   .neon-magenta-box {
+    box-shadow:
+      0 0 20px rgba(255,0,255,.3),
+      inset 0 0 20px rgba(255,0,255,.1);
+  }
+
+   .neon-cyan-border {
+    border-color: rgba(0, 255, 255, 0.3);
+  }
+
+  .neon-cyan-border-hover:hover {
+    border-color: #00ffff;
+  }
+
+  .neon-cyan-box-soft {
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  }
+
+  .neon-cyan-box-inset {
+    box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.3);
+  }
+
+  .neon-cyan-text-soft {
+    text-shadow: 0 0 5px #00ffff;
+  }
+}
