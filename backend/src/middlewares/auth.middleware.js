@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { jwtVerify, createRemoteJWKSet } from "jose";
+import { syncUser } from "../services/user.service.js";
 
 const JWKS = createRemoteJWKSet(
   new URL(`${process.env.SUPABASE_URL}/auth/v1/.well-known/jwks.json`)
@@ -20,11 +21,16 @@ export async function requireAuth(req, res, next) {
     });
 
     req.user = {
-      id: payload.sub,
-      email: payload.email
-    };
+  id: payload.sub,
+  email: payload.email
+};
 
-    next();
+  await syncUser({
+    id: req.user.id,
+    email: req.user.email
+  });
+
+  next();
   } catch {
     return res.status(401).json({ error: "Invalid token" });
   }

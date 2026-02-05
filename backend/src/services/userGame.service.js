@@ -77,3 +77,11 @@ export async function getUserStats(userId) {
     totalPlaytime: playtimeAgg._sum.playtime ?? 0
   };
 }
+
+export async function deleteUserGame({ userId, gameId }) {
+  return prisma.userGame.delete({
+    where: {
+      userId_gameId: { userId, gameId }
+    }
+  });
+}

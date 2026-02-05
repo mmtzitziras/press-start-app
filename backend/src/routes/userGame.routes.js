@@ -4,6 +4,7 @@ import { upsertUserGame } from "../services/userGame.service.js";
 import { getUserGames } from "../services/userGame.service.js";
 import { updateUserGameReview } from "../services/userGame.service.js";
 import { getOrCreateGameById } from "../services/game.service.js";
+import { deleteUserGame } from "../services/userGame.service.js";
 
 
 const router = Router();
@@ -70,6 +71,19 @@ router.patch("/", requireAuth, async(req, res) =>{
     res.json(updated);
 })
 
+router.delete("/:gameId", requireAuth, async (req, res) => {
+  const gameId = Number(req.params.gameId);
 
+  if (!gameId) {
+    return res.status(400).json({ error: "Invalid gameId" });
+  }
+
+  await deleteUserGame({
+    userId: req.user.id,
+    gameId
+  });
+
+  res.status(204).end();
+});
 
 export default router;
